@@ -46,8 +46,22 @@ public class TopKBasedOnTreeMap {
         tree.put(score1, "Jangz");
 	    tree.put(score2, "Daniel");
 	    tree.put(score3, "Marvin");
+	    System.out.println("current: " + tree.size());
+        if (tree.size() > 3) {
+            tree.remove(tree.lastKey());
+        }
 	    tree.put(score4, "David");
+        System.out.println("current: " + tree.size() + " key: " + tree.lastKey());
+	    if (tree.size() > 3) {
+	        Object k = tree.remove(tree.lastKey());
+            System.out.println("remove: " + k);
+        }
 	    tree.put(score5, "Kevin");
+        System.out.println("current: " + tree.size() + " key: " + tree.lastKey());
+        if (tree.size() > 3) {
+            Object k = tree.remove(tree.lastKey());
+            System.out.println("remove: " + k);
+        }
 
         Stream.of(tree.entrySet().stream()).flatMap(Function.identity()).forEach(t -> {
             System.out.println(t.getKey() + " : " + t.getValue());

@@ -18,7 +18,7 @@ public class MyScore implements Comparable<MyScore> {
 
 	@Override
 	public int compareTo(MyScore o) {
-		return this.score >= o.score ? 1 : -1;
+		return score.compareTo(o.getScore());
 	}
 
 }

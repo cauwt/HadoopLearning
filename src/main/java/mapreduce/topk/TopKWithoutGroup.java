@@ -1,10 +1,5 @@
 package mapreduce.topk;
 
-import java.io.IOException;
-import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -19,14 +14,19 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import java.io.IOException;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 /**
- * group by sex and descend by score, get all person
+ * no group by sex and descend by score, get top 3
  * @author jangz
  *
  */
-public class TopK extends Configured implements Tool {
+public class TopKWithoutGroup extends Configured implements Tool {
 	
-	public static class TopKMapper extends Mapper<Object, Text, Text, Text> {
+	public static class TopKWithoutGroupMapper extends Mapper<Object, Text, Text, Text> {
 		private Text outKey = new Text();
 		private Text outValue = new Text();
 		
@@ -40,11 +40,10 @@ public class TopK extends Configured implements Tool {
 		}
 	}
 	
-	public static class TopKReducer extends Reducer<Text, Text, NullWritable, Text> {
+	public static class TopKWithoutGroupReducer extends Reducer<Text, Text, NullWritable, Text> {
 		private static final int k = 3;
-		private TreeMap<MyScore, Text> maleTree = new TreeMap<>((o1, o2) -> o2.compareTo(o1));
-		private TreeMap<MyScore, Text> femaleTree = new TreeMap<>((o1, o2) -> o2.compareTo(o1));
-		
+		private TreeMap<MyScore, Text> tree = new TreeMap<>((o1, o2) -> o2.compareTo(o1));
+
 		@Override
 		protected void reduce(Text key, Iterable<Text> values, Context context)
 				throws IOException, InterruptedException {
@@ -53,18 +52,17 @@ public class TopK extends Configured implements Tool {
 				StringBuffer buffer = new StringBuffer("");
 				// name age gender score
 				buffer.append(infos[0]).append("\t").append(infos[1]).append("\t").append(key.toString()).append("\t").append(infos[2]);
-				if (key.toString().equalsIgnoreCase("male")) {
-					maleTree.put(new MyScore(Integer.parseInt(infos[2])), new Text(buffer.toString()));
-				} else if (key.toString().equalsIgnoreCase("female")) {
-					femaleTree.put(new MyScore(Integer.parseInt(infos[2])), new Text(buffer.toString()));
+				tree.put(new MyScore(Integer.parseInt(infos[2])), new Text(buffer.toString()));
+				if (tree.size() > k) {
+					tree.remove(tree.lastKey());
 				}
 			}
 		}
-		
+
 		@Override
 		protected void cleanup(Context context)
 				throws IOException, InterruptedException {
-			Stream.of(maleTree.entrySet().stream(), femaleTree.entrySet().stream()).flatMap(Function.identity()).forEach(tree -> {
+			tree.entrySet().stream().forEach(tree -> {
 				try {
 					context.write(NullWritable.get(), tree.getValue());
 				} catch (IOException | InterruptedException e) {
@@ -75,7 +73,7 @@ public class TopK extends Configured implements Tool {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		int res = ToolRunner.run(new Configuration(), new TopK(), args);
+		int res = ToolRunner.run(new Configuration(), new TopKWithoutGroup(), args);
 		System.exit(res);
 	}
 
@@ -100,9 +98,9 @@ public class TopK extends Configured implements Tool {
 		}
 		FileOutputFormat.setOutputPath(job, output);
 		// set map-reduce logic
-		job.setJarByClass(TopK.class);
-		job.setMapperClass(TopKMapper.class);
-		job.setReducerClass(TopKReducer.class);
+		job.setJarByClass(TopKWithoutGroup.class);
+		job.setMapperClass(TopKWithoutGroupMapper.class);
+		job.setReducerClass(TopKWithoutGroupReducer.class);
 		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
