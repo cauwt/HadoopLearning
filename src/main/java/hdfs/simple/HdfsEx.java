@@ -1,7 +1,6 @@
-package hdfs;
+package hdfs.simple;
 
 import hdfs.util.ConfUtil;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
