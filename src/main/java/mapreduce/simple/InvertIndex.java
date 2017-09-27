@@ -23,7 +23,7 @@ public class InvertIndex {
 		protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 			String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
 			
-			StringTokenizer tokenizer = new StringTokenizer(key.toString());
+			StringTokenizer tokenizer = new StringTokenizer(value.toString());
 			while (tokenizer.hasMoreTokens()) {
 				// For each word emit word as key and file name as value 
 				context.write(new Text(tokenizer.nextToken()), new Text(fileName));
