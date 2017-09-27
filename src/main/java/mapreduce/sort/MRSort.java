@@ -15,18 +15,18 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 /**
  * 
- * <p>Title: SortStep</p>
+ * <p>Title: MRSort</p>
  * <p>Description: </p>
  * @author jangz
  * @date 2017年9月27日 下午3:03:54
  */
-public class SortStep {
+public class MRSort {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 		Configuration conf = new Configuration();
 		Job job = Job.getInstance(conf);
 		
-		job.setJarByClass(SortStep.class);
+		job.setJarByClass(MRSort.class);
 		
 		job.setMapperClass(SortMapper.class);
 		job.setMapOutputKeyClass(Information.class);
