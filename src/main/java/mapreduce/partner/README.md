@@ -1,6 +1,8 @@
 ### ContestSort
 
-####members.txt:
+> When we use a bean as key and the bean extends WritableComparable, as a result, we only need to override compareTo to realize sort, the method 'setSortComparatorClass' need to remove. 
+
+#### members.txt:
 Alice,23,female,45<br/>
 Bob,34,male,89<br/>
 Chris,67,male,97<br/>
@@ -16,7 +18,7 @@ Mary,6,female,93<br/>
 Clara,87,female,72<br/>
 Monica,56,female,92<br/>
 
-####result as follows:
+#### result as follows:
 Alice		23	female	45<br/>
 Kristine	38	female	53<br/>
 Clara		87	female	72<br/>
