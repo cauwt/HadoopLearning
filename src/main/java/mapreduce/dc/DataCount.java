@@ -1,16 +1,20 @@
 package mapreduce.dc;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-import java.io.IOException;
 
 /**
  * Created by yachao on 17/9/25.
@@ -36,12 +40,14 @@ public class DataCount {
 
     public static class DataReduce extends Reducer<Text, DataBean, Text, DataBean> {
         @Override
-        protected void reduce(Text key, Iterable<DataBean> values, Context context) throws IOException,
+        protected void reduce(Text key, Iterable<DataBean> v2s, Context context) throws IOException,
                 InterruptedException {
+        	// Define counter
             long up_sum = 0;
             long down_sum = 0;
-
-            for (DataBean value : values) {
+            
+            // Iterator v2s, then sum
+            for (DataBean value : v2s) {
                 up_sum += value.getUpPayLoad();
                 down_sum += value.getDownPayLoad();
             }
@@ -49,7 +55,38 @@ public class DataCount {
             context.write(key, bean);
         }
     }
-
+    
+    /**
+     * 
+     * <p>Title: ServiceProviderPartitioner</p>
+     * <p>Description: </p>
+     * @author jangz
+     * @date 2017年9月27日 下午2:21:20
+     */
+    public static class ServiceProviderPartitioner extends Partitioner<Text, DataBean> {
+    	
+    	private static Map<String, Integer> providerMap = new HashMap<String, Integer>();
+    	
+    	static {
+    		providerMap.put("139", 1);
+    		providerMap.put("138", 2);
+    		providerMap.put("159", 3);
+    	}
+    	
+		@Override
+		public int getPartition(Text key, DataBean value, int numPartitions) {
+			String telNo = key.toString();
+			String pcode = telNo.substring(0, 3);
+			Integer p = providerMap.get(pcode);
+			
+			if (Objects.isNull(p)) {
+				p = 0;
+			}
+			return p;
+		}
+    	
+    }
+    
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration configuration = new Configuration();
         Job job = Job.getInstance(configuration);
@@ -65,6 +102,10 @@ public class DataCount {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DataBean.class);
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+//        job.setPartitionerClass(ServiceProviderPartitioner.class);
+        
+        job.setNumReduceTasks(Integer.parseInt(args[2]));
 
         job.waitForCompletion(true);
     }

@@ -1,17 +1,15 @@
 package mapreduce.dc;
 
-import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.io.WritableComparable;
-import org.apache.hadoop.io.WritableComparator;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import org.apache.hadoop.io.Writable;
+
 /**
  * Created by yachao on 17/9/25.
  */
-public class DataBean implements WritableComparable {
+public class DataBean implements Writable {
 
     private String tel;
 
@@ -35,7 +33,11 @@ public class DataBean implements WritableComparable {
     public String toString() {
         return this.upPayLoad + "\t" + this.downPayLoad + "\t" + this.totalPayLoad;
     }
-
+    
+    /**
+     * Serialization
+     * Care: 1. type  2. order
+     */
     @Override
     public void write(DataOutput out) throws IOException {
         out.writeUTF(tel);
@@ -43,7 +45,10 @@ public class DataBean implements WritableComparable {
         out.writeLong(downPayLoad);
         out.writeLong(totalPayLoad);
     }
-
+    
+    /**
+     * De-serialization
+     */
     @Override
     public void readFields(DataInput in) throws IOException {
         this.tel = in.readUTF();
@@ -82,19 +87,5 @@ public class DataBean implements WritableComparable {
 
     public void setTotalPayLoad(long totalPayLoad) {
         this.totalPayLoad = totalPayLoad;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        if (o instanceof DataBean) {
-            DataBean dataBean = (DataBean) o;
-
-            if (this.totalPayLoad > dataBean.totalPayLoad) {
-                return 1;
-            } else if (this.totalPayLoad < dataBean.totalPayLoad) {
-                return -1;
-            }
-        }
-        return 0;
     }
 }
