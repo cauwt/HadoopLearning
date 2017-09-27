@@ -15,19 +15,19 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class SumStep extends Configured implements Tool {
+public class MRSum extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		
-		ToolRunner.run(conf, new SumStep(), args);
+		ToolRunner.run(conf, new MRSum(), args);
 	}
 
 	@Override
 	public int run(String[] args) throws Exception {
 	Job job = Job.getInstance(getConf(), "sum step");
 		
-		job.setJarByClass(SumStep.class);
+		job.setJarByClass(MRSum.class);
 		
 		job.setMapperClass(SumMapper.class);
 		job.setMapOutputKeyClass(Text.class);
