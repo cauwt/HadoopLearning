@@ -1,6 +1,8 @@
 ### ContestSort
 
-> When we use a bean as key and the bean extends WritableComparable, as a result, we only need to override compareTo to realize sort, the method 'setSortComparatorClass' need to remove. 
+> When we use a bean as key and the bean extends WritableComparable, as a result, we only need to override compareTo to realize sort, the method 'setSortComparatorClass' need to remove.<br/> 
+
+> Note: In the Hadoop default sorting algorithm, only the key is sorted.<br/>
 
 #### The implementation of method 'compareTo' as follows:
 	    @Override
