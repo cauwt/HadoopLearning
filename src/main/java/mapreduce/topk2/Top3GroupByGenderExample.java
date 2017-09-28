@@ -117,7 +117,7 @@ public class Top3GroupByGenderExample extends Configured implements Tool {
 			
 			int k = 3;
 			
-			k = maleList.size() >= 3 ? k : maleList.size();
+			k = maleList.size() >= 3 ? 3 : maleList.size();
 			for (int i = 0; i < k; i++) {
 				Person person = maleList.get(i);
 				context.write(new Text(person.getName()), person);
@@ -125,7 +125,7 @@ public class Top3GroupByGenderExample extends Configured implements Tool {
 				System.out.println("MyReducer out<" + person.getName() + "," + person + ">");
 			}
 			
-			k = femaleList.size() >= 3 ? k : femaleList.size();
+			k = femaleList.size() >= 3 ? 3 : femaleList.size();
 			for (int i = 0; i < k; i++) {
 				Person person = maleList.get(i);
 				context.write(new Text(person.getName()), person);
