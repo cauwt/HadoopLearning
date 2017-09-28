@@ -13,13 +13,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-/**
- * 
- * <p>Title: MRSort</p>
- * <p>Description: </p>
- * @author jangz
- * @date 2017年9月27日 下午3:03:54
- */
 public class MRSort {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {

@@ -18,18 +18,6 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-/**
- * 按照年龄分组降序输出所有人的成绩
- * <p>
- * Title: GroupByAgeDescScoreExample
- * </p>
- * <p>
- * Description:
- * </p>
- * 
- * @author jangz
- * @date 2017年9月28日 下午4:06:11
- */
 public class GroupByAgeDescScoreExample extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {

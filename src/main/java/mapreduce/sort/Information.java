@@ -5,13 +5,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparable;
-/**
- * 
- * <p>Title: Information</p>
- * <p>Description: </p>
- * @author jangz
- * @date 2017年9月27日 下午3:04:01
- */
+
 public class Information implements WritableComparable<Information> {
 
 	private String account;

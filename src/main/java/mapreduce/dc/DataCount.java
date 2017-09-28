@@ -56,13 +56,6 @@ public class DataCount {
         }
     }
     
-    /**
-     * 
-     * <p>Title: ServiceProviderPartitioner</p>
-     * <p>Description: </p>
-     * @author jangz
-     * @date 2017年9月27日 下午2:21:20
-     */
     public static class ServiceProviderPartitioner extends Partitioner<Text, DataBean> {
     	
     	private static Map<String, Integer> providerMap = new HashMap<String, Integer>();

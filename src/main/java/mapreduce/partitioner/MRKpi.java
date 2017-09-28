@@ -19,13 +19,6 @@ import org.apache.hadoop.util.ToolRunner;
 
 import mapreduce.dc.DataBean;
 
-/**
- * 
- * <p>Title: MRKpi</p>
- * <p>Description: </p>
- * @author jangz
- * @date 2017年9月28日 上午10:48:10
- */
 public class MRKpi extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {

@@ -22,13 +22,6 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-/**
- * 取每组中男生前三名成绩和女生前三名成绩
- * <p>Title: Top3GroupByGenderExample</p>
- * <p>Description: </p>
- * @author jangz
- * @date 2017年9月28日 下午4:51:05
- */
 public class Top3GroupByGenderExample extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {

@@ -16,19 +16,10 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-/**
- * �Ե��ʳ��ֵ�Ƶ������
- * 
- */
 public class Sort {
 
-	/**
-	 * ��ȡ���ʣ���Ƶ word��
-	 * 
-	 */
 	public static class Map extends Mapper<Object, Text, IntWritable, Text> {
 
-		// ���key ��Ƶ
 		IntWritable outKey = new IntWritable();
 		Text outValue = new Text();
 
@@ -50,7 +41,6 @@ public class Sort {
 
 	}
 
-	// �������ʹ��combineԤ����map������һ���ٽ���reduce
 	public static class Combine extends Reducer<IntWritable, Text, IntWritable, Text> {
 
 		@Override
@@ -62,10 +52,6 @@ public class Sort {
 		}
 	}
 
-	/**
-	 * ���ݴ�Ƶ����
-	 * 
-	 */
 	public static class Reduce extends Reducer<IntWritable, Text, Text, IntWritable> {
 
 		String[] topK = null;
@@ -77,10 +63,6 @@ public class Sort {
 			topK = new String[Integer.parseInt(conf.get("k"))];
 		}
 
-		/*
-		 * ��Ϊ���¶����key�ıȽϷ���������reducer�������ܿ���֪��key���Դ�Ƶ�Ӹߵ�����������ǰK��������ߵ�
-		 * �Դ�ƵΪKey��Ҫ�õ�reduce��������
-		 */
 		@Override
 		protected void reduce(IntWritable key, Iterable<Text> values, Context context)
 				throws IOException, InterruptedException {
@@ -126,7 +108,6 @@ public class Sort {
 
 		Configuration conf = new Configuration();
 
-		// ǰK����Ҫ������ĸ�Ŀ¼
 		conf.set("topKout", topKout);
 		conf.set("k", k + "");
 
@@ -137,17 +118,14 @@ public class Sort {
 		job.setCombinerClass(Combine.class);
 		job.setReducerClass(Reduce.class);
 
-		// ����Map�������
 		job.setMapOutputKeyClass(IntWritable.class);
 		job.setMapOutputValueClass(Text.class);
 
-		// ����Reduce�������
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 
 		job.setSortComparatorClass(Comp1.class);
 
-		// ������������Ŀ¼
 		FileInputFormat.addInputPath(job, new Path(in));
 		FileOutputFormat.setOutputPath(job, outPath);
 
