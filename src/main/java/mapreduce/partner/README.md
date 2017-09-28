@@ -2,6 +2,20 @@
 
 > When we use a bean as key and the bean extends WritableComparable, as a result, we only need to override compareTo to realize sort, the method 'setSortComparatorClass' need to remove. 
 
+#### The implementation of method 'compareTo' as follows:
+	    @Override
+    public int compareTo(ContestPerson o) {
+        if (!this.gender.equals(o.getGender())) {
+            return this.gender.compareTo(o.getGender());
+        } else if (this.score != o.getScore()) {
+            return this.score.compareTo(o.getScore());
+        } else if (this.age != o.getAge()) {
+            return this.age.compareTo(o.getAge());
+        } else {
+            return this.name.compareTo(o.getName());
+        }
+    }
+
 #### members.txt:
 Alice,23,female,45<br/>
 Bob,34,male,89<br/>
