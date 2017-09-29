@@ -1,7 +1,7 @@
 ### Define a Combiner
 
 #### The main effect of no Combiner as follows:
-> First, network bandwidth is seriously occupied, reducing program efficiency.<br/>
+> First, network bandwidth is seriously occupied, reducing program efficiency.<br/><br/>
 > Second, single node overloaded will reduce program performance.</br>
 
 #### Note: When can we use Combiner?
