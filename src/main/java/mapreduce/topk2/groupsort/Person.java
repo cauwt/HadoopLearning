@@ -1,4 +1,4 @@
-package mapreduce.topk2;
+package mapreduce.topk2.groupsort;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -35,7 +35,7 @@ public class Person implements WritableComparable<Person> {
 
 	@Override
 	public String toString() {
-		return "\t" + age + "\t" + gender + "\t" + score;
+		return name + "\t" + age + "\t" + gender + "\t" + score;
 	}
 
 	@Override
@@ -55,18 +55,11 @@ public class Person implements WritableComparable<Person> {
 	}
 
 	/**
-	 * First, if gender does not equal then sort by gender asc.
-	 * Second, if score equals then sort by name asc, otherwise sort by score desc.
+	 * Sort by score desc.
 	 */
 	@Override
 	public int compareTo(Person o) {
-		if (!this.gender.equals(o.gender)) {
-			return this.gender.compareTo(o.gender);
-		} else if (this.score != o.score) {
-			return -this.score.compareTo(o.score);
-		} else {
-			return this.name.compareTo(o.name);
-		}
+		return -this.score.compareTo(o.score);
 	}
 
 	public String getName() {

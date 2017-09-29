@@ -1,10 +1,6 @@
-package mapreduce.topk2;
+package mapreduce.topk2.groupsort;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -15,6 +11,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -22,14 +19,21 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class Top3GroupByGenderExample extends Configured implements Tool {
+/**
+ * 
+ * <p>Title: GroupByAgeDescScoreExample</p>
+ * <p>Description: </p>
+ * @author jangz
+ * @date 2017/9/29 14:14
+ */
+public class GroupByAgeDescScoreExample extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
 		if (otherArgs.length != 2) {
-			System.out.println("Usage: Top3GroupByGenderExample <in> <out>");
+			System.out.println("Usage: GroupByAgeDescScoreExample <in> <out>");
 			System.exit(2);
 		}
 
@@ -44,24 +48,27 @@ public class Top3GroupByGenderExample extends Configured implements Tool {
 			fs.delete(outPath, true);
 		}
 
-		Job job = Job.getInstance(getConf(), "Top3GroupByGenderExampleJob");
+		Job job = Job.getInstance(getConf(), "GroupByAgeDescScoreExampleJob");
 
-		job.setJarByClass(Top3GroupByGenderExample.class);
+		job.setJarByClass(GroupByAgeDescScoreExample.class);
 
 		job.setMapperClass(MyMapper.class);
 		job.setMapOutputKeyClass(Person.class);
 		job.setMapOutputValueClass(NullWritable.class);
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
-
+		
+		job.setPartitionerClass(MyPartitioner.class);
+		job.setNumReduceTasks(3);
+		
 		job.setReducerClass(MyReducer.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Person.class);
+		job.setOutputKeyClass(Person.class);
+		job.setOutputValueClass(NullWritable.class);
 		FileOutputFormat.setOutputPath(job, outPath);
 
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
 
-	public static class MyMapper extends Mapper<LongWritable, Text, Text, Person> {
+	public static class MyMapper extends Mapper<LongWritable, Text, Person, NullWritable> {
 
 		private Person person = new Person();
 
@@ -78,60 +85,40 @@ public class Top3GroupByGenderExample extends Configured implements Tool {
 			Integer score = Integer.parseInt(infos[3]);
 
 			person.set(name, age, gender, score);
+			context.write(person, NullWritable.get());
+			System.out.println("MyMapper out<" + person + ">");
+		}
+	}
+	
+	public static class MyPartitioner extends Partitioner<Person, NullWritable> {
 
-			context.write(new Text(gender), person);
-			System.out.println("MyMapper out<" + gender + "," + person + ">");
+		@Override
+		public int getPartition(Person key, NullWritable value, int numPartitions) {
+			
+			Integer age = key.getAge();
+			
+			if (age < 20) {
+				return 0;
+			} else if (age <= 50) {
+				return 1;
+			} else {
+				return 2;
+			}
 		}
 	}
 
-	public static class MyReducer extends Reducer<Text, Person, Text, Person> {
+	public static class MyReducer extends Reducer<Person, NullWritable, Person, NullWritable> {
 
-		private List<Person> maleList = new ArrayList<>();
-		private List<Person> femaleList = new ArrayList<>();
+		private Text k = new Text();
 
 		@Override
-		protected void reduce(Text key, Iterable<Person> v2s, Context context)
+		protected void reduce(Person key, Iterable<NullWritable> v2s, Context context)
 				throws IOException, InterruptedException {
+			System.out.println("MyReducer in<" + key + ">");
 
-			for (Person person : v2s) {
-				System.out.println("MyReducer in<" + key + "," + person + ">");
+			context.write(key, NullWritable.get());
 
-				if (key.equals("male")) {
-					maleList.add(person);
-				} else {
-					femaleList.add(person);
-				}
-			}
-		}
-
-		@Override
-		protected void cleanup(Context context) throws IOException, InterruptedException {
-			Comparator<Person> comparator = (Person o1, Person o2) -> {
-					if (o1.getScore() > o2.getScore()) {
-						return -1;
-					}
-					return 1;
-			};
-			Collections.sort(maleList, comparator);
-			Collections.sort(femaleList, comparator);
-			
-			int k = 3;
-			
-			k = maleList.size() >= 3 ? 3 : maleList.size();
-			for (int i = 0; i < k; i++) {
-				Person person = maleList.get(i);
-				context.write(new Text(person.getName()), person);
-				
-				System.out.println("MyReducer out<" + person.getName() + "," + person + ">");
-			}
-			
-			k = femaleList.size() >= 3 ? 3 : femaleList.size();
-			for (int i = 0; i < k; i++) {
-				Person person = maleList.get(i);
-				context.write(new Text(person.getName()), person);
-				
-				System.out.println("MyReducer out<" + person.getName() + "," + person + ">");
-			}
+			System.out.println("MyReducer out<" + k + "," + key + ">");
 		}
 	}
 }
