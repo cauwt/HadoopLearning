@@ -8,8 +8,9 @@
 > Third, realize a your partitioner so as to meet the requirement group by age.<br/>
 > Forth, realize a your reducer.<br/>
 
-##### results as follows:
-![]()
+#### results as follows:
+![](https://github.com/Zychaowill/ImgStore/blob/master/hadoop/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-09-29%20%E4%B8%8A%E5%8D%8810.26.33.png)
+![](https://github.com/Zychaowill/ImgStore/blob/master/hadoop/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-09-29%20%E4%B8%8A%E5%8D%8810.26.21.png)
 
 #### Top k
 > Please look at top package.<br/>
@@ -37,5 +38,6 @@
 		}
 	}
 	
-##### results as follows:
-![]()
+#### results as follows:
+![](https://github.com/Zychaowill/ImgStore/blob/master/hadoop/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-09-29%20%E4%B8%8B%E5%8D%882.09.29.png)
+![](https://github.com/Zychaowill/ImgStore/blob/master/hadoop/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-09-29%20%E4%B8%8B%E5%8D%882.09.13.png)
