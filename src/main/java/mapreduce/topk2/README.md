@@ -3,7 +3,6 @@
 #### First group, then sort
 > Please look at groupsort package.<br/>
 > First, define a class 'Person' implements WritableComparable and override methods 'write', 'readFields' and 'compareTo', of course, you also should override 'toString' method so as to data transition.<br/>
-	<code>public class Person implements WritableComparable<Person><code><br/>
 > Second, realize a your mapper.<br/>
 > Third, realize a your partitioner so as to meet the requirement group by age.<br/>
 > Forth, realize a your reducer.<br/>
