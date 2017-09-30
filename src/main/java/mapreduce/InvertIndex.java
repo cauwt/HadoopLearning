@@ -26,6 +26,7 @@ public class InvertIndex {
     public static class IndexMapper extends Mapper<Object, Text, Text, Text> {
         private Text word = new Text();
 
+        @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String fileName = ((FileSplit)context.getInputSplit()).getPath().getName();
             StringTokenizer iter = new StringTokenizer(value.toString());
@@ -37,7 +38,7 @@ public class InvertIndex {
     }
 
     public static class IndexReducer extends Reducer<Text, Text, Text, Text> {
-
+        @Override
         public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             Map<String, Integer> result = new HashMap<>();
             for (Text value: values) {
