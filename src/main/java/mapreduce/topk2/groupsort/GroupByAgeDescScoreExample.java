@@ -57,6 +57,7 @@ public class GroupByAgeDescScoreExample extends Configured implements Tool {
 		job.setMapOutputValueClass(NullWritable.class);
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		
+		//Question from cauwt: why do you add this?
 		job.setPartitionerClass(MyPartitioner.class);
 		job.setNumReduceTasks(3);
 		
@@ -89,6 +90,7 @@ public class GroupByAgeDescScoreExample extends Configured implements Tool {
 			System.out.println("MyMapper out<" + person + ">");
 		}
 	}
+
 	
 	public static class MyPartitioner extends Partitioner<Person, NullWritable> {
 
